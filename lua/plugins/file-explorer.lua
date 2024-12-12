@@ -2,9 +2,7 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     config = function() 
-	print "hi from neo tree"
 	vim.keymap.set('n', '<leader>b', '<cmd>Neotree float buffers<CR>')
-
 	require("neo-tree").setup({
  		window = {
 			mappings = {

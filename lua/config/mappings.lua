@@ -47,7 +47,7 @@ vim.keymap.set("n", "<leader>c", function()
 
   vim.defer_fn(function()
     print(" ")
-  end, 1000)
+  end, 2000)
 end, { desc = "[C]close current buffer" })
 
 -- Save current buffer by pressint leader + w
