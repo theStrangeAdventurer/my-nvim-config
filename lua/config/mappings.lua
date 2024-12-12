@@ -1,6 +1,5 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
-
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -39,9 +38,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- Save current buffer by pressint leader + w
+vim.keymap.set("n", "<leader>c", function()
+  local full_current_buffer_path = vim.fn.bufname('%')
+  local relative_buffer_path = vim.fn.fnamemodify(full_current_buffer_path, ':~:.')
+  local message = "📁Buffer closed: " .. relative_buffer_path 
+  print(message)
+  vim.cmd("x")
+
+  vim.defer_fn(function()
+    print(" ")
+  end, 1000)
+end, { desc = "[C]close current buffer" })
+
+-- Save current buffer by pressint leader + w
 vim.keymap.set("n", "<leader>w", function()
   vim.cmd("w")
-  print "Buffer saved 📁✨"
+  print "📁Buffer saved ✨"
   vim.defer_fn(function()
     print(" ")
   end, 500)
