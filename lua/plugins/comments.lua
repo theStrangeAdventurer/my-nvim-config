@@ -2,23 +2,19 @@
 
 return {
     'numToStr/Comment.nvim',
-    keys = {
-	{
-		"<leader>]",
-		function()
-			    local api = require('Comment.api');
-			    
-			    print("current mode => " .. api)
-		end,
-		desc = "Comment current line"
-	},
-	{
-		    "<leader>/",
-		    function()
-			    local api = require('Comment.api')
-			    api.toggle.linewise.current();
-		end,
-		desc = "Comment current line"
-	},
+    opts = {
+	toggler = {
+        	---Line-comment toggle keymap
+        	line = '<leader>/',
+        	---Block-comment toggle keymap
+        	block = '<leader>]',
+    	},
+	---LHS of operator-pending mappings in NORMAL and VISUAL mode
+	opleader = {
+        	---Line-comment keymap
+        	line = '<leader>/',
+        	---Block-comment keymap
+        	block = '<leader>]',
+    	},    	    
     }
 }

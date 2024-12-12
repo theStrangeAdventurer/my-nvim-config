@@ -45,5 +45,5 @@ vim.keymap.set("n", "<leader>w", function()
   vim.defer_fn(function()
     print(" ")
   end, 500)
-end)
+end, { desc = "[W]rite (Save) current buffer" })
 
