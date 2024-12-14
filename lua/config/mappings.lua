@@ -52,6 +52,8 @@ end, { desc = "[C]close current buffer" })
 
 -- Save current buffer by pressint leader + w
 vim.keymap.set("n", "<leader>w", function()
+  local full_current_buffer_path = vim.fn.bufname('%')
+  print("buf_name: " .. vim.fn.bufname('%'))
   vim.cmd("w")
   print "📁Buffer saved ✨"
   vim.defer_fn(function()
@@ -59,3 +61,14 @@ vim.keymap.set("n", "<leader>w", function()
   end, 500)
 end, { desc = "[W]rite (Save) current buffer" })
 
+vim.keymap.set({'n','t'}, '<leader>t', function()
+    local commands = {
+        n = "terminal",
+        t = "x",
+    }
+    local command = commands[vim.fn.mode()]
+    
+    if command then
+        vim.cmd(command)
+    end
+end, {})
