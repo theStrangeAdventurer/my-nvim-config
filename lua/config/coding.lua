@@ -11,7 +11,7 @@ local function trim(value)
 	return string.gsub(value, "^%s*(.-)%s*$", "%1")
 end
 
-local DEFAULT_ROOT_MARKER = ".git"
+local DEFAULT_ROOT_MARKER = "tsconfig.json,.git"
 -- Define the function to be executed
 local function setLocalSettings(t)
 	setmetatable(t, { __index = { buf = 0 } })
@@ -29,9 +29,7 @@ local function setLocalSettings(t)
 
 	local rootDir = vim.fs.root(t.buf, markers)
 	if (rootDir) then
-		print("Set root dir: ")
-		vim.g.local_settings = { root = rootDir, root_markers = rootMarkers }
-				print(vim.inspect(vim.g.local_settings))
+		vim.g.local_settings = { root = rootDir, root_markers = markers }
 	end
 end
 

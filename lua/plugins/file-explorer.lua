@@ -28,7 +28,7 @@ return {
 				["l"] = "open",
 				["h"] = "toggle_node",
 			}
-		}     
+		}
 	})
     end,
     dependencies = {

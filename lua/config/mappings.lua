@@ -41,7 +41,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.keymap.set("n", "<leader>c", function()
   local full_current_buffer_path = vim.fn.bufname('%')
   local relative_buffer_path = vim.fn.fnamemodify(full_current_buffer_path, ':~:.')
-  local message = "📁Buffer closed: " .. relative_buffer_path 
+  local message = "📁Buffer closed: " .. relative_buffer_path
   print(message)
   vim.cmd("x")
 
@@ -50,9 +50,10 @@ vim.keymap.set("n", "<leader>c", function()
   end, 2000)
 end, { desc = "[C]close current buffer" })
 
--- Save current buffer by pressint leader + w
+-- Save current buffer by pressing leader + w
 vim.keymap.set("n", "<leader>w", function()
-  print("buf_name: \"" .. vim.fn.bufname('%') .. "\"")
+  if (vim.fn.filereadable(vim.fn.expand('%')) ~= 1) then return end
+
   vim.cmd("w")
   print "📁Buffer saved ✨"
   vim.defer_fn(function()
