@@ -15,6 +15,6 @@ return {
         	line = '<leader>/',
         	---Block-comment keymap
         	block = '<leader>]',
-    	},    	    
+    	},
     }
 }

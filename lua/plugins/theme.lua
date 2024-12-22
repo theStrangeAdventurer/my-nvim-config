@@ -4,7 +4,7 @@ return {
 	opts = {
 		theme = 'dark',
 		borders = false,
-		disable= { background = true },
+		-- disable= { background = true },
 		fade_nc = true
 	}
 }

@@ -3,10 +3,10 @@ return {
 	"williamboman/mason-lspconfig",
 	dependencies = { "mason.nvim" },
 	config = function()
-		print("mason-lspconfig called...")
 		local lspconfig = require("lspconfig")
+		print "hi from nested folder"
 
-		require("mason-lspconfig").setup()
+		require("mason-lspconfig").setup({})
 		require("mason-lspconfig").setup_handlers {
         		function (server_name) -- default handler (optional)
             			lspconfig[server_name].setup {}
