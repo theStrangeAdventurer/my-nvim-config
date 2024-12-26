@@ -30,44 +30,64 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 --  Try it with `yap` in normal mode
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
-  callback = function()
-    vim.highlight.on_yank()
-  end,
+	desc = 'Highlight when yanking (copying) text',
+	group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
+	callback = function()
+		vim.highlight.on_yank()
+	end,
 })
 
 -- Save current buffer by pressint leader + w
 vim.keymap.set("n", "<leader>c", function()
-  local full_current_buffer_path = vim.fn.bufname('%')
-  local relative_buffer_path = vim.fn.fnamemodify(full_current_buffer_path, ':~:.')
-  local message = "📁Buffer closed: " .. relative_buffer_path
-  print(message)
-  vim.cmd("x")
+	local full_current_buffer_path = vim.fn.bufname('%') or ""
+	local is_fs = string.find(full_current_buffer_path, 'filesystem') -- neo-tree filesystem
+	local command = 'x'
+	if is_fs then
+		command = 'q'
+	end
 
-  vim.defer_fn(function()
-    print(" ")
-  end, 2000)
+	local relative_buffer_path = vim.fn.fnamemodify(full_current_buffer_path, ':~:.')
+	local message = "📁Buffer closed: " .. relative_buffer_path
+	print(message)
+	vim.cmd(command)
+
+	vim.defer_fn(function()
+		print(" ")
+	end, 2000)
 end, { desc = "[C]close current buffer" })
 
 -- Save current buffer by pressing leader + w
 vim.keymap.set("n", "<leader>w", function()
-  if (vim.fn.filereadable(vim.fn.expand('%')) ~= 1) then return end
-
-  vim.cmd("w")
-  print "📁Buffer saved ✨"
-  vim.defer_fn(function()
-    print(" ")
-  end, 500)
+	if (vim.fn.filereadable(vim.fn.expand('%')) ~= 1) then return end
+	vim.lsp.buf.format({ async = false })
+	vim.cmd("w")
+	print "📁Buffer saved ✨"
+	vim.defer_fn(function()
+		print(" ")
+	end, 500)
 end, { desc = "[W]rite (Save) current buffer" })
 
-vim.keymap.set({'n','t'}, '<leader>t', function()
-    local commands = {
-        n = "terminal",
-        t = "x",
-    }
-    local command = commands[vim.fn.mode()]
-    if command then
-        vim.cmd(command)
-    end
+local function createTerminalBufferAndRunTerminal()
+	-- Создание нового буфера
+	local buf = vim.api.nvim_create_buf(false, true) -- buffer for temporal work
+	vim.api.nvim_open_win(buf, false, {           -- https://neovim.io/doc/user/api.html#nvim_open_win()
+		split = 'left',
+		win = 0
+	})
+	-- Открытие терминала
+	vim.api.nvim_command('terminal')
+end
+
+vim.keymap.set({ 'n', 't' }, '<leader>t', function()
+	local commands = {
+		n = "terminal",
+		t = "q"
+	}
+	local command = commands[vim.fn.mode()]
+	if command == nil then return end
+	if command == commands.n then
+		createTerminalBufferAndRunTerminal()
+	else
+		vim.cmd(command)
+	end
 end, {})
