@@ -5,7 +5,7 @@
 		end)
  ]]
 
-vim.g.local_settings = { root = vim.env.PWD }
+vim.g.local_settings = { root = vim.env.PWD, launch_json_path = nil }
 
 local function trim(value)
 	return string.gsub(value, "^%s*(.-)%s*$", "%1")
@@ -24,20 +24,29 @@ local function setLocalSettings(t)
 	end
 	local markers = {}
 	for word in string.gmatch(rootMarkers, "([^,]+)") do
-	    markers[#markers + 1] = trim(word)
+		markers[#markers + 1] = trim(word)
 	end
 
 	local rootDir = vim.fs.root(t.buf, markers)
+	local launch_json_path = vim.fs.root(vim.env.PWD, ".vscode");
+	if (launch_json_path ~= nil) then
+		print("full json path: " .. launch_json_path .. "/.vscode/launch.json")
+		launch_json_path = launch_json_path .. "/.vscode/launch.json"
+	end
 	if (rootDir) then
-		vim.g.local_settings = { root = rootDir, root_markers = markers }
+		vim.g.local_settings = {
+			root = rootDir,
+			root_markers = markers,
+			launch_json_path = launch_json_path
+		}
 	end
 end
 
 vim.api.nvim_create_autocmd('BufReadPost', {
-  desc = 'set coding settings every time when opening buffer',
-  callback = function(ev)
-	setLocalSettings(ev)
-  end
+	desc = 'set coding settings every time when opening buffer',
+	callback = function(ev)
+		setLocalSettings(ev)
+	end
 })
 
 setLocalSettings({}) -- initial setttings
