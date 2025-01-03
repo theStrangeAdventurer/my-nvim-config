@@ -35,15 +35,17 @@ return {
 			-- You'll need to check that you have the required things installed
 			-- online, please don't ask me how to install them :)
 			ensure_installed = {
+				"lua_ls",
+				"ts_ls",
 				-- Update this to ensure that you have the debuggers for the langs you want
 			},
 		},
 	},
-	config = function(_, opts)
-		print(vim.inspect(opts))
+	config = function()
 		-- Set nice color highlighting at the stopped line
 		vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 
+		local debugger_path = vim.fn.stdpath("data") .. "/lazy/vscode-js-debug"
 		-- Show nice icons in gutter instead of the default characters
 		for name, sign in pairs(dap_icons) do
 			sign = type(sign) == "table" and sign or { sign }
@@ -56,14 +58,49 @@ return {
 		end
 
 		local dap = require("dap")
-		if opts.configurations ~= nil then
-			local merged = require("config.utils").deep_tbl_extend(dap.configurations, opts.configurations)
-			dap.configurations = merged
+
+		dap.adapters["pwa-node"] = {
+			type = "server",
+			host = "localhost",
+			port = "${port}",
+			executable = {
+				command = "node",
+				args = { debugger_path .. "/out/src/dapDebugServer.js", "${port}" },
+			}
+		}
+		for _, language in ipairs(js_based_languages) do
+			dap.configurations[language] = {
+				{
+					type = "pwa-node",
+					request = "launch",
+					name = "Launch file",
+					program = "${file}",
+					cwd = "${workspaceFolder}",
+				},
+				{
+					type = "pwa-node",
+					request = "attach",
+					name = "Attach",
+					processId = function()
+						local utils = require 'dap.utils'
+						return utils.pick_process({ filter = "node" })
+					end,
+					skipFiles = { "<node_internals>/**" },
+					cwd = "${workspaceFolder}",
+				}
+			}
 		end
 	end,
 	keys = {
 		{
 			"<leader>db",
+			function()
+				require("dap").toggle_breakpoint()
+			end,
+			desc = "toggle [d]ebug [b]reakpoint",
+		},
+		{
+			"<leader>dc",
 			function()
 				-- if vim.fn.filereadable(vim.g.local_settings.launch_json_path) then
 				-- 	local dap_vscode = require("dap.ext.vscode")
@@ -73,13 +110,6 @@ return {
 				-- 		["pwa-chrome"] = js_based_languages,
 				-- 	})
 				-- end
-				require("dap").toggle_breakpoint()
-			end,
-			desc = "toggle [d]ebug [b]reakpoint",
-		},
-		{
-			"<leader>dc",
-			function()
 				require("dap").continue()
 			end,
 			desc = "[d]ebug [c]ontinue (start here)",

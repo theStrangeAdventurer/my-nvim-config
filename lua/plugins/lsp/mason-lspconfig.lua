@@ -4,10 +4,17 @@ return {
 	dependencies = { "mason.nvim" },
 	config = function()
 		local lspconfig = require("lspconfig")
-		require("mason-lspconfig").setup({})
+		require("mason-lspconfig").setup({
+			ensure_installed = {
+				"lua_ls",
+				"ts_ls",
+				"eslint",
+			}
+		})
 
 		require("mason-lspconfig").setup_handlers {
 			function(server_name) -- default handler (optional)
+				print("mason server installed: " .. server_name)
 				lspconfig[server_name].setup {}
 			end,
 			-- Next, you can provide a dedicated handler for specific servers.
@@ -16,7 +23,7 @@ return {
 					settings = {
 						Lua = {
 							diagnostics = {
-								globals = { "vim" }
+								globals = { "vim", "jit" }
 							}
 						}
 					}
