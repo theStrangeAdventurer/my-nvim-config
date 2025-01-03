@@ -30,7 +30,6 @@ local function setLocalSettings(t)
 	local rootDir = vim.fs.root(t.buf, markers)
 	local launch_json_path = vim.fs.root(vim.env.PWD, ".vscode");
 	if (launch_json_path ~= nil) then
-		print("full json path: " .. launch_json_path .. "/.vscode/launch.json")
 		launch_json_path = launch_json_path .. "/.vscode/launch.json"
 	end
 	if (rootDir) then
