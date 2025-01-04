@@ -1,10 +1,3 @@
---[[ 		vim.fs.root(0, function(name, path)
-			print("name >> " .. name)
-			print("path >> " .. path);
-			return false
-		end)
- ]]
-
 vim.g.local_settings = { root = vim.env.PWD, launch_json_path = nil }
 
 local function trim(value)

@@ -38,7 +38,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 	end,
 })
 -- Save current buffer by pressint leader + w
-vim.keymap.set("n", "<leader>c", function()
+vim.keymap.set("n", "<leader>x", function()
 	local full_current_buffer_path = vim.fn.bufname('%') or ""
 	local is_fs = string.find(full_current_buffer_path, 'filesystem') -- neo-tree filesystem
 	local command = 'x'
