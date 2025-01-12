@@ -2,7 +2,12 @@
 return {
 	"rebelot/kanagawa.nvim",
 	config = function()
-		require("kanagawa").load "dragon" -- wave | dragon | lotus
+		require("kanagawa").setup {
+			transparent = true,
+			-- theme = "lotus"
+		}
+
+		require("kanagawa").load "wave"
 	end,
 }
 
