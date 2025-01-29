@@ -6,11 +6,14 @@ return {
 		local lspconfig = require("lspconfig")
 		require("mason-lspconfig").setup({
 			ensure_installed = {
+				-- lua
 				"lua_ls",
+				-- frontend
 				"cssls",
-				"jdtls",
 				"ts_ls",
 				"eslint",
+				-- java
+				"jdtls",
 			}
 		})
 

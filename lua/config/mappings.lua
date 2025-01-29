@@ -37,8 +37,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 		vim.highlight.on_yank()
 	end,
 })
--- Save current buffer by pressint leader + w
-vim.keymap.set("n", "<leader>x", function()
+vim.keymap.set("n", "<C-x>", function()
 	local full_current_buffer_path = vim.fn.bufname('%') or ""
 	local is_fs = string.find(full_current_buffer_path, 'filesystem') -- neo-tree filesystem
 	local command = 'x'
@@ -54,10 +53,9 @@ vim.keymap.set("n", "<leader>x", function()
 	vim.defer_fn(function()
 		print(" ")
 	end, 2000)
-end, { desc = "[C]close current buffer" })
+end, { desc = "Close[x] current buffer" })
 
--- Save current buffer by pressing leader + w
-vim.keymap.set("n", "<leader>w", function()
+vim.keymap.set("n", "<C-s>", function()
 	if (vim.fn.filereadable(vim.fn.expand('%')) ~= 1) then return end
 	vim.lsp.buf.format({ async = false })
 	vim.cmd("w")
@@ -65,7 +63,7 @@ vim.keymap.set("n", "<leader>w", function()
 	vim.defer_fn(function()
 		print(" ")
 	end, 500)
-end, { desc = "[W]rite (Save) current buffer" })
+end, { desc = "[S]ave current buffer" })
 
 local function createTerminalBufferAndRunTerminal()
 	-- Создание нового буфера
@@ -77,17 +75,3 @@ local function createTerminalBufferAndRunTerminal()
 	-- Открытие терминала
 	vim.api.nvim_command('terminal')
 end
-
-vim.keymap.set({ 'n', 't' }, '<leader>t', function()
-	local commands = {
-		n = "terminal",
-		t = "q"
-	}
-	local command = commands[vim.fn.mode()]
-	if command == nil then return end
-	if command == commands.n then
-		createTerminalBufferAndRunTerminal()
-	else
-		vim.cmd(command)
-	end
-end, {})
