@@ -19,15 +19,21 @@ return {
 		vim.keymap.set("n", "<leader>fi", function()
 			vim.cmd('Telescope live_grep')
 		end, { desc = "Find [i]nside files" })
+		-- Telescope find_files
+		vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", {
+			noremap = true,
+			silent = true,
+			desc = "Find [f]iles"
+		})
 		vim.keymap.set("n", "<leader>fd", "<cmd>Telescope dir live_grep<CR>", {
 			noremap = true,
 			silent = true,
 			desc = "Find in [d]irectory"
 		})
-		vim.keymap.set("n", "<leader>ff", "<cmd>Telescope dir find_files<CR>", {
+		vim.keymap.set("n", "<leader>fd", "<cmd>Telescope dir find_files<CR>", {
 			noremap = true,
 			silent = true,
-			desc = "Find [f]iles"
+			desc = "Find [d]irs"
 		})
 	end
 }
