@@ -15,14 +15,12 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 -- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
+--  Use Shift+<hjkl> to switch between windows
+vim.keymap.set('n', '<S-h>', '<C-w>h', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<S-l>', '<C-w>l', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<S-j>', '<C-w>j', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<S-k>', '<C-w>k', { desc = 'Move focus to the upper window' })
 --  See `:help wincmd` for a list of all window commands
-
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -37,7 +35,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 		vim.highlight.on_yank()
 	end,
 })
-vim.keymap.set("n", "<C-x>", function()
+vim.keymap.set("n","<S-x>", function()
 	local full_current_buffer_path = vim.fn.bufname('%') or ""
 	local is_fs = string.find(full_current_buffer_path, 'filesystem') -- neo-tree filesystem
 	local command = 'x'
@@ -55,7 +53,7 @@ vim.keymap.set("n", "<C-x>", function()
 	end, 2000)
 end, { desc = "Close[x] current buffer" })
 
-vim.keymap.set("n", "<C-s>", function()
+vim.keymap.set("n", "<S-s>", function()
 	if (vim.fn.filereadable(vim.fn.expand('%')) ~= 1) then return end
 	vim.lsp.buf.format({ async = false })
 	vim.cmd("w")
