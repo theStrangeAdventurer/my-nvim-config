@@ -17,7 +17,7 @@ return {
 			}
 		})
 
-		require("mason-lspconfig").setup_handlers {
+		require("mason-lspconfig").setup {
 			function(server_name) -- default handler (optional)
 				lspconfig[server_name].setup {
 				}
@@ -33,9 +33,34 @@ return {
 						}
 					}
 				}
-			end
-		}
+			end }
+		-- Command to toggle inline diagnostics
+		vim.api.nvim_create_user_command(
+			'DiagnosticsToggleVirtualText',
+			function()
+				local current_value = vim.diagnostic.config().virtual_text
+				if current_value then
+					vim.diagnostic.config({ virtual_text = false })
+				else
+					vim.diagnostic.config({ virtual_text = true })
+				end
+			end,
+			{}
+		)
 
+		-- Command to toggle diagnostics
+		vim.api.nvim_create_user_command(
+			'DiagnosticsToggle',
+			function()
+				local current_value = vim.diagnostic.is_disabled()
+				if current_value then
+					vim.diagnostic.enable()
+				else
+					vim.diagnostic.disable()
+				end
+			end,
+			{}
+		)
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 			callback = function(ev)

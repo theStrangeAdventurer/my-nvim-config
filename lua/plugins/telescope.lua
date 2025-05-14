@@ -14,7 +14,7 @@ return {
 	} },
 	config = function()
 		require('telescope').setup { defaults = {
-			file_ignore_patterns = { "node_modules", ".git" }
+			file_ignore_patterns = { "pnpm-lock.yaml", "package-lock.json", "dist/", "build/", "node_modules", ".git" }
 		} }
 		vim.keymap.set("n", "<leader>fi", function()
 			vim.cmd('Telescope live_grep')
