@@ -72,6 +72,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			})
 		end
 
+		-- Code action
+		if client:supports_method('textDocument/codeAction') then
+			vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {
+				buffer = args.buf,
+				desc = "Code action"
+			})
+			-- Также можно добавить для визуального режима
+			vim.keymap.set('v', '<leader>ca', vim.lsp.buf.code_action, {
+				buffer = args.buf,
+				desc = "Code action (selection)"
+			})
+		end
+
 		-- Go to implementation
 		if client:supports_method('textDocument/implementation') then
 			vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, {
