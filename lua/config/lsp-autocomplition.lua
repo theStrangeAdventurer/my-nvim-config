@@ -10,7 +10,7 @@ while true do
 	local name, type = vim.loop.fs_scandir_next(handle)
 	if not name then break end
 
-	if type == "file" then
+	if type == "file" and name:match("%.lua$") then
 		local parts = vim.split(name, '.', { plain = true });
 		-- Загружаем конфигурацию из файла
 		local config_path = lsp_configs_dir .. '/' .. name
@@ -25,7 +25,11 @@ while true do
 			vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 				pattern = patterns,
 				callback = function(ev)
-					vim.lsp.start(vim.lsp.config[lsp_name])
+					print(vim.inspect(ev))
+					vim.lsp.start(vim.tbl_extend('force', config, {
+						name = lsp_name,
+						root_dir = vim.fs.root(ev.buf, config.root_markers or { 'package.json' })
+					}))
 				end,
 			});
 		else
@@ -33,7 +37,6 @@ while true do
 		end
 	end
 end
-
 
 vim.diagnostic.config({
 	virtual_text = { current_line = true }

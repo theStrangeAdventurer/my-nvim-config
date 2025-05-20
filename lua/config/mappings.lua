@@ -35,7 +35,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 		vim.highlight.on_yank()
 	end,
 })
-vim.keymap.set("n","<S-x>", function()
+vim.keymap.set("n", "<S-x>", function()
 	local full_current_buffer_path = vim.fn.bufname('%') or ""
 	local is_fs = string.find(full_current_buffer_path, 'filesystem') -- neo-tree filesystem
 	local command = 'x'
@@ -54,22 +54,7 @@ vim.keymap.set("n","<S-x>", function()
 end, { desc = "Close[x] current buffer" })
 
 vim.keymap.set("n", "<S-s>", function()
-	if (vim.fn.filereadable(vim.fn.expand('%')) ~= 1) then return end
-	vim.lsp.buf.format({ async = false })
 	vim.cmd("w")
 	print "📁Buffer saved ✨"
-	vim.defer_fn(function()
-		print(" ")
-	end, 500)
+	vim.defer_fn(function() print(" ") end, 500)
 end, { desc = "[S]ave current buffer" })
-
-local function createTerminalBufferAndRunTerminal()
-	-- Создание нового буфера
-	local buf = vim.api.nvim_create_buf(false, true) -- buffer for temporal work
-	vim.api.nvim_open_win(buf, false, {           -- https://neovim.io/doc/user/api.html#nvim_open_win()
-		split = 'left',
-		win = 0
-	})
-	-- Открытие терминала
-	vim.api.nvim_command('terminal')
-end

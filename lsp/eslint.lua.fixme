@@ -1,0 +1,10 @@
+local markers = { 'package.json' }
+
+return {
+	cmd = { 'vscode-eslint-language-server', '--stdio' },
+	root_markers = markers,
+	filetypes = { 'ts', 'tsx', 'js', 'jsx' },
+	settings = {
+		workingDirectory = { mode = "auto" }
+	}
+}
