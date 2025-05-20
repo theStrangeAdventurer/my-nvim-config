@@ -1,5 +1,4 @@
 local lsp_configs_dir = vim.fn.stdpath("config") .. "/lsp"
-local lsp_file_types = {}
 
 local handle = vim.loop.fs_scandir(lsp_configs_dir)
 if not handle then
@@ -39,6 +38,27 @@ end
 vim.diagnostic.config({
 	virtual_text = { current_line = true }
 });
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*.json",
+	callback = function()
+		-- Сохраняем текущую позицию курсора
+		local cursor_pos = vim.fn.getpos('.')
+
+		-- Запускаем jq для форматирования всего буфера
+		vim.cmd([[%!jq '.']])
+
+		-- Если jq вернул ошибку (ненулевой код), отменяем изменения и показываем сообщение
+		if vim.v.shell_error ~= 0 then
+			vim.cmd('undo')
+			vim.notify("jq не смог отформатировать JSON: возможно, JSON невалиден", vim.log.levels.ERROR)
+		end
+
+		-- Восстанавливаем позицию курсора
+		vim.fn.setpos('.', cursor_pos)
+	end,
+	desc = "Format JSON files with jq before saving"
+})
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('my.lsp', {}),
