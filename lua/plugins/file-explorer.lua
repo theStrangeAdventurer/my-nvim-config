@@ -18,7 +18,7 @@ return {
 			popup_border_style = "rounded",
 			enable_git_status = true,
 			enable_diagnostics = true,
-			window = {
+						window = {
 				position = 'left',
 				width = 30,
 				mappings = {
@@ -27,6 +27,14 @@ return {
 					["#"] = "fuzzy_finder",
 					["l"] = "open",
 					["h"] = "toggle_node",
+	["P"] = {
+        "toggle_preview",
+        config = {
+          use_float = false,
+          use_image_nvim = false,
+          -- title = 'Neo-tree Preview',
+        },
+      },
 				}
 			}
 		})

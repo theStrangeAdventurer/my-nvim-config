@@ -1,5 +1,5 @@
 require("config.options")
+require("config.lsp-autocomplition")
 require("config.mappings")
 require("config.terminal")
 require("config.lazy")
-require("config.coding")

@@ -93,8 +93,8 @@ return {
 	keys = dap_keymaps,
 	event = 'VeryLazy',
 	dependencies = {
+		"mason-org/mason.nvim",
 		"jay-babu/mason-nvim-dap.nvim",
-
 		cmd = { "DapInstall", "DapUninstall" },
 		opts = {
 			-- Makes a best effort to setup the various debuggers with
