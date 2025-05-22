@@ -25,7 +25,6 @@ while true do
 			vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 				pattern = patterns,
 				callback = function(ev)
-					print(vim.inspect(ev))
 					vim.lsp.start(vim.tbl_extend('force', config, {
 						name = lsp_name,
 						root_dir = vim.fs.root(ev.buf, config.root_markers or { 'package.json' })
@@ -116,6 +115,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 		-- 	-- client.server_capabilities.completionProvider.triggerCharacters = chars
 		-- 	vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
 		-- end
+
 		-- Auto-format ("lint") on save.
 		-- Usually not needed if server supports "textDocument/willSaveWaitUntil".
 		if not client:supports_method('textDocument/willSaveWaitUntil')
