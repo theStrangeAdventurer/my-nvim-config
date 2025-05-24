@@ -20,7 +20,7 @@ while true do
 		if config_status and config then
 			local patterns = vim.tbl_map(function(ext)
 				return '*.' .. ext
-			end, config.filetypes);
+			end, config.custom_ext or config.filetypes);
 			vim.lsp.enable(lsp_name);
 			vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 				pattern = patterns,
