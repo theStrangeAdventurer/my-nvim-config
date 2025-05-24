@@ -1,12 +1,17 @@
--- https://github.com/rebelot/kanagawa.nvim
 return {
-	"rebelot/kanagawa.nvim",
+	-- "sainnhe/everforest",
+	"EdenEast/nightfox.nvim",
 	config = function()
-		require("kanagawa").setup {
-			transparent = false,
-			-- theme = "lotus"
-		}
-
-		require("kanagawa").load "wave"
-	end,
+		vim.cmd("colorscheme nightfox")
+	end
+	-- https://github.com/rebelot/kanagawa.nvim
+	-- "rebelot/kanagawa.nvim",
+	-- config = function()
+	-- 	require("kanagawa").setup {
+	-- 		transparent = false,
+	-- 		-- theme = "lotus"
+	-- 	}
+	--
+	-- 	require("kanagawa").load "wave"
+	-- end,
 }

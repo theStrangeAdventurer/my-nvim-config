@@ -21,10 +21,10 @@ while true do
 			local patterns = vim.tbl_map(function(ext)
 				return '*.' .. ext
 			end, config.custom_ext or config.filetypes);
-			vim.lsp.enable(lsp_name);
-			vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+			vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 				pattern = patterns,
 				callback = function(ev)
+					vim.lsp.enable(lsp_name);
 					vim.lsp.start(vim.tbl_extend('force', config, {
 						name = lsp_name,
 						root_dir = vim.fs.root(ev.buf, config.root_markers or { 'package.json' })
