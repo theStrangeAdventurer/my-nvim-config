@@ -38,7 +38,6 @@ else
   exit 1
 fi
 
-
 if [ "$OS" = "Darwin" ]; then
   echo "${GREEN}Detected macOS${NC}"
   brew install lua-language-server
@@ -85,6 +84,7 @@ npm i -g typescript-language-server
 # https://github.com/hrsh7th/vscode-langservers-extracted
 npm i -g vscode-langservers-extracted
 npm i -g vscode-json-languageserver
+npm i -g bash-language-server
 
 echo "${GREEN}Installation complete${NC}"
 
