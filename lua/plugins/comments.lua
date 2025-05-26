@@ -2,7 +2,7 @@
 
 return {
 	'numToStr/Comment.nvim',
-	lazy = true,
+	lazy = false,
 	opts = {
 		toggler = {
 			---Line-comment toggle keymap
