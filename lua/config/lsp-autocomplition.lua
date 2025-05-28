@@ -65,6 +65,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('my.lsp', {}),
 	callback = function(args)
+		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+
 		local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 		-- Rename symbol
 		if client:supports_method('textDocument/rename') then
@@ -109,11 +111,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			})
 		end
 		-- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
+		-- https://neovim.io/doc/user/lsp.html#lsp-completion
 		if client:supports_method('textDocument/completion') then
+			-- prevent the built-in vim.lsp.completion autotrigger from selecting the first item
+			vim.opt.completeopt = { "menuone", "noselect", "popup" }
 			-- Optional: trigger autocompletion on EVERY keypress. May be slow!
 			-- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
 			-- client.server_capabilities.completionProvider.triggerCharacters = chars
-			vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+			vim.lsp.completion.enable(true, client.id, args.buf, {
+				autotrigger = true,
+				convert = function(item)
+					return { abbr = item.label:gsub('%b()', '') }
+				end,
+			})
+			vim.keymap.set("i", "<C-space>", vim.lsp.completion.get, { desc = "trigger autocompletion" })
 		end
 
 		-- Auto-format ("lint") on save.
