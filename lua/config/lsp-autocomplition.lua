@@ -6,6 +6,7 @@ if not handle then
 	return
 end
 
+-- enabling lsp servers and setting root_dir
 while true do
 	local name, type = vim.loop.fs_scandir_next(handle)
 	if not name then break end
@@ -41,6 +42,7 @@ vim.diagnostic.config({
 	virtual_text = { current_line = true }
 });
 
+-- Adding json formatting using jq
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.json",
 	callback = function()
@@ -62,71 +64,73 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	desc = "Format JSON files with jq before saving"
 })
 
+local function set_lsp_keymaps(args)
+	local client = assert(vim.lsp.get_client_by_id(args.data.client_id));
+	-- Rename symbol
+	if client:supports_method('textDocument/rename') then
+		vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {
+			buffer = args.buf,
+			desc = "Rename symbol"
+		})
+	end
+	-- Go to definition
+	if client:supports_method('textDocument/definition') then
+		vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {
+			buffer = args.buf,
+			desc = "Go to definition"
+		})
+	end
+	-- Code action
+	if client:supports_method('textDocument/codeAction') then
+		vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {
+			buffer = args.buf,
+			desc = "Code action"
+		})
+		vim.keymap.set('v', '<leader>ca', vim.lsp.buf.code_action, {
+			buffer = args.buf,
+			desc = "Code action (selection)"
+		})
+	end
+
+	-- Go to implementation
+	if client:supports_method('textDocument/implementation') then
+		vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, {
+			buffer = args.buf,
+			desc = "Go to implementation"
+		})
+	end
+	-- Hover information (K)
+	if client:supports_method('textDocument/hover') then
+		vim.keymap.set('n', 'K', vim.lsp.buf.hover, {
+			buffer = args.buf,
+			desc = "Show hover information"
+		})
+	end
+	-- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
+	-- https://neovim.io/doc/user/lsp.html#lsp-completion
+	if client:supports_method('textDocument/completion') then
+		-- prevent the built-in vim.lsp.completion autotrigger from selecting the first item
+		vim.opt.completeopt = { "menuone", "noselect", "popup" }
+		-- Optional: trigger autocompletion on EVERY keypress. May be slow!
+		-- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
+		-- client.server_capabilities.completionProvider.triggerCharacters = chars
+		vim.lsp.completion.enable(true, client.id, args.buf, {
+			autotrigger = true,
+			convert = function(item)
+				return { abbr = item.label:gsub('%b()', '') }
+			end,
+		})
+		vim.keymap.set("i", "<C-space>", vim.lsp.completion.get, { desc = "trigger autocompletion" })
+	end
+end
+
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('my.lsp', {}),
 	callback = function(args)
 		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+		set_lsp_keymaps(args);
 
-		local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-		-- Rename symbol
-		if client:supports_method('textDocument/rename') then
-			vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, {
-				buffer = args.buf,
-				desc = "Rename symbol"
-			})
-		end
-		-- Go to definition
-		if client:supports_method('textDocument/definition') then
-			vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {
-				buffer = args.buf,
-				desc = "Go to definition"
-			})
-		end
-
-		-- Code action
-		if client:supports_method('textDocument/codeAction') then
-			vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {
-				buffer = args.buf,
-				desc = "Code action"
-			})
-			-- Также можно добавить для визуального режима
-			vim.keymap.set('v', '<leader>ca', vim.lsp.buf.code_action, {
-				buffer = args.buf,
-				desc = "Code action (selection)"
-			})
-		end
-
-		-- Go to implementation
-		if client:supports_method('textDocument/implementation') then
-			vim.keymap.set('n', 'gI', vim.lsp.buf.implementation, {
-				buffer = args.buf,
-				desc = "Go to implementation"
-			})
-		end
-		-- Hover information (K)
-		if client:supports_method('textDocument/hover') then
-			vim.keymap.set('n', 'K', vim.lsp.buf.hover, {
-				buffer = args.buf,
-				desc = "Show hover information"
-			})
-		end
-		-- Enable auto-completion. Note: Use CTRL-Y to select an item. |complete_CTRL-Y|
-		-- https://neovim.io/doc/user/lsp.html#lsp-completion
-		if client:supports_method('textDocument/completion') then
-			-- prevent the built-in vim.lsp.completion autotrigger from selecting the first item
-			vim.opt.completeopt = { "menuone", "noselect", "popup" }
-			-- Optional: trigger autocompletion on EVERY keypress. May be slow!
-			-- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
-			-- client.server_capabilities.completionProvider.triggerCharacters = chars
-			vim.lsp.completion.enable(true, client.id, args.buf, {
-				autotrigger = true,
-				convert = function(item)
-					return { abbr = item.label:gsub('%b()', '') }
-				end,
-			})
-			vim.keymap.set("i", "<C-space>", vim.lsp.completion.get, { desc = "trigger autocompletion" })
-		end
-
+		local client = assert(vim.lsp.get_client_by_id(args.data.client_id));
 		-- Auto-format ("lint") on save.
 		-- Usually not needed if server supports "textDocument/willSaveWaitUntil".
 		if not client:supports_method('textDocument/willSaveWaitUntil')
