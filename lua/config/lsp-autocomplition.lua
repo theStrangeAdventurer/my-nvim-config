@@ -2,7 +2,7 @@ local lsp_configs_dir = vim.fn.stdpath("config") .. "/lsp"
 
 local handle = vim.loop.fs_scandir(lsp_configs_dir)
 if not handle then
-	vim.notify("Не удалось открыть директорию: " .. directory, vim.log.levels.ERROR)
+	vim.notify("Не удалось открыть директорию: " .. lsp_configs_dir, vim.log.levels.ERROR)
 	return
 end
 
