@@ -1,10 +1,28 @@
+local _default_adapter = 'gemma'
+
 local adapters = {
-	qwen3 = function()
-		return require("codecompanion.adapters").extend("ollama", {
-			name = "qwen3",
+	-- Посмотреть реализацию для ollama
+	-- https://github.com/nhac43/dotfiles/blob/b3cce533551ea63d2d732ec38412dbee38d615ac/nvim/lua/codecompanion_config.lua#L4
+	gemma = function()
+		return require("codecompanion.adapters").extend("openai_compatible", {
+			name = "gemma",
+			formatted_name = "Ollama",
+			roles = {
+				llm = "assistant",
+				user = "user",
+				tool = "tool",
+			},
+			opts = {
+				stream = false,
+				tools = true,
+				vision = false,
+			},
 			schema = {
 				model = {
-					default = "qwen3:14b",
+					-- WIP
+					default = "qwen2.5:14b",
+					-- default = "llama3.1:8b",
+					-- default = "gemma3:12b",
 				},
 			},
 		})
@@ -19,13 +37,13 @@ local adapters = {
 	end or nil
 }
 
-local default_strategy
+local default_adapter
 if vim.env._LLM_DEFAULT_STRATEGY then
-	default_strategy = vim.env._LLM_DEFAULT_STRATEGY
+	default_adapter = vim.env._LLM_DEFAULT_STRATEGY
 elseif adapters and adapters.custom_anthropic then
-	default_strategy = 'custom_anthropic'
+	default_adapter = 'custom_anthropic'
 else
-	default_strategy = 'qwen3'
+	default_adapter = _default_adapter
 end
 
 
@@ -33,7 +51,6 @@ return {
 	'olimorris/codecompanion.nvim',
 	dependencies = {
 		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
-		{ "cuducos/yaml.nvim" },
 		{ "nvim-lua/plenary.nvim" },
 		{ "hrsh7th/nvim-cmp" },
 		{
@@ -43,11 +60,14 @@ return {
 		},
 	},
 	config = function()
+		vim.keymap.set('n', '<leader>ai', ':CodeCompanionChat<CR>', { desc = 'Open chat wiht [AI]' })
+		vim.keymap.set('n', '<leader>in', ':CodeCompanionChat<CR>', { desc = 'Open ai in [in]line mode' })
+
 		require("codecompanion").setup({
 			strategies = {
-				cmd = { adapter = default_strategy },
-				chat = { adapter = default_strategy },
-				inline = { adapter = default_strategy },
+				cmd = { adapter = default_adapter },
+				chat = { adapter = default_adapter },
+				inline = { adapter = default_adapter },
 			},
 			adapters = adapters,
 		})
