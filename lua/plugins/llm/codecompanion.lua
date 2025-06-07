@@ -1,5 +1,9 @@
-local _default_adapter = 'gemma'
+if (vim.env._LLM_DEFAULT_PLUGIN and vim.env._LLM_DEFAULT_PLUGIN ~= 'codecompanion') then
+	return {}
+end
+print "codecompanion was loaded..."
 
+local _default_adapter = 'gemma'
 local adapters = {
 	-- Посмотреть реализацию для ollama
 	-- https://github.com/nhac43/dotfiles/blob/b3cce533551ea63d2d732ec38412dbee38d615ac/nvim/lua/codecompanion_config.lua#L4
@@ -27,6 +31,18 @@ local adapters = {
 			},
 		})
 	end,
+	deepseek = function()
+		return require("codecompanion.adapters").extend("deepseek", {
+			env = {
+				api_key = vim.env.DEEPSEEK_API_KEY,
+			},
+			schema = {
+				model = {
+					default = "deepseek-chat",
+				},
+			},
+		})
+	end,
 	custom_anthropic = vim.env.CUSTOM_ANTHROPIC_URL and function()
 		return require("codecompanion.adapters").extend("anthropic", {
 			url = vim.env.CUSTOM_ANTHROPIC_URL,
@@ -42,6 +58,8 @@ if vim.env._LLM_DEFAULT_STRATEGY then
 	default_adapter = vim.env._LLM_DEFAULT_STRATEGY
 elseif adapters and adapters.custom_anthropic then
 	default_adapter = 'custom_anthropic'
+elseif adapters and adapters.deepseek and vim.env.DEEPSEEK_API_KEY then
+	default_adapter = 'deepseek'
 else
 	default_adapter = _default_adapter
 end
