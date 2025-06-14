@@ -2,7 +2,7 @@ local lsp_configs_dir = vim.fn.stdpath("config") .. "/lsp"
 
 local handle = vim.loop.fs_scandir(lsp_configs_dir)
 if not handle then
-	vim.notify("Не удалось открыть директорию: " .. lsp_configs_dir, vim.log.levels.ERROR)
+	vim.notify("Failed to open directory: " .. lsp_configs_dir, vim.log.levels.ERROR)
 	return
 end
 
@@ -13,7 +13,7 @@ while true do
 
 	if type == "file" and name:match("%.lua$") then
 		local parts = vim.split(name, '.', { plain = true });
-		-- Загружаем конфигурацию из файла
+		-- Load configuration from file
 		local config_path = lsp_configs_dir .. '/' .. name
 		local config_status, config = pcall(dofile, config_path)
 		local lsp_name = parts[1];
@@ -33,32 +33,33 @@ while true do
 				end,
 			});
 		else
-			vim.notify("Ошибка при загрузке конфигурации LSP: " .. lsp_name, vim.log.levels.ERROR)
+			vim.notify("Error loading LSP configuration: " .. lsp_name, vim.log.levels.ERROR)
 		end
 	end
 end
 
 vim.diagnostic.config({
-	virtual_text = { current_line = true }
+	-- virtual_text = { current_line = true }
+	-- virtual_text = { current_line = false }
+	virtual_lines = {}
 });
 
--- Adding json formatting using jq
+-- Adding json formatting using jqocal function set_lsp_keymaps(args)
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.json",
 	callback = function()
-		-- Сохраняем текущую позицию курсора
+		-- Save current cursor position
 		local cursor_pos = vim.fn.getpos('.')
 
-		-- Запускаем jq для форматирования всего буфера
+		-- Run jq to format the entire buffer
 		vim.cmd([[%!jq '.']])
 
-		-- Если jq вернул ошибку (ненулевой код), отменяем изменения и показываем сообщение
+		-- If jq returned an error (non-zero code), save without formatting
 		if vim.v.shell_error ~= 0 then
-			vim.cmd('undo')
-			vim.notify("jq не смог отформатировать JSON: возможно, JSON невалиден", vim.log.levels.ERROR)
+			vim.notify("jq failed to format JSON: saving without changes", vim.log.levels.WARN)
 		end
 
-		-- Восстанавливаем позицию курсора
+		-- Restore cursor position
 		vim.fn.setpos('.', cursor_pos)
 	end,
 	desc = "Format JSON files with jq before saving"
@@ -123,6 +124,18 @@ local function set_lsp_keymaps(args)
 		vim.keymap.set("i", "<C-space>", vim.lsp.completion.get, { desc = "trigger autocompletion" })
 	end
 end
+
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = { 'codecompanion' }, -- File types where you want custom completions
+	callback = function()
+		print "Codecompanion callback fired!"
+		-- -- Enable completion with <C-n>
+		--     vim.opt_local.completeopt:append('menuone')
+		--
+		--     -- Add custom completion items
+		--     vim.api.nvim_buf_set_option(0, 'completefunc', 'v:lua.require"my_completion".completefunc')
+	end
+})
 
 vim.api.nvim_create_autocmd('LspAttach', {
 	group = vim.api.nvim_create_augroup('my.lsp', {}),

@@ -35,26 +35,43 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 		vim.highlight.on_yank()
 	end,
 })
+
+function check_is_non_writable()
+	local non_writable_buffers = {
+		['neo-tree'] = true,
+		['codecompanion'] = true,
+	}
+
+	return non_writable_buffers[vim.bo.filetype]
+end
+
+function clean_command_bar()
+	print(" ")
+end
+
 vim.keymap.set("n", "<S-x>", function()
-	local full_current_buffer_path = vim.fn.bufname('%') or ""
-	local is_fs = string.find(full_current_buffer_path, 'filesystem') -- neo-tree filesystem
 	local command = 'x'
-	if is_fs then
+
+	if check_is_non_writable() then
 		command = 'q'
 	end
 
-	local relative_buffer_path = vim.fn.fnamemodify(full_current_buffer_path, ':~:.')
+	local relative_buffer_path = vim.fn.fnamemodify(vim.fn.bufname('%') or "", ':~:.')
 	local message = "📁Buffer closed: " .. relative_buffer_path
 	print(message)
 	vim.cmd(command)
 
-	vim.defer_fn(function()
-		print(" ")
-	end, 2000)
+	vim.defer_fn(clean_command_bar, 1000)
 end, { desc = "Close[x] current buffer" })
 
 vim.keymap.set("n", "<S-s>", function()
-	vim.cmd("w")
+	local command = 'w'
+
+	if check_is_non_writable() then
+		command = 'q'
+	end
+
+	vim.cmd(command)
 	print "📁Buffer saved ✨"
-	vim.defer_fn(function() print(" ") end, 500)
+	vim.defer_fn(clean_command_bar, 1000)
 end, { desc = "[S]ave current buffer" })
