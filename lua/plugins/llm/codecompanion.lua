@@ -43,6 +43,13 @@ local adapters = {
 			},
 		})
 	end,
+	anthropic = function()
+		return require("codecompanion.adapters").extend("anthropic", {
+			env = {
+				api_key = vim.env.ANTHROPIC_API_KEY,
+			},
+		})
+	end,
 	custom_anthropic = vim.env.CUSTOM_ANTHROPIC_URL and function()
 		return require("codecompanion.adapters").extend("anthropic", {
 			url = vim.env.CUSTOM_ANTHROPIC_URL,
