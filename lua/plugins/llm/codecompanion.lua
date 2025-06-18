@@ -3,31 +3,33 @@ if (vim.env._LLM_DEFAULT_PLUGIN and vim.env._LLM_DEFAULT_PLUGIN ~= 'codecompanio
 end
 print "codecompanion was loaded..."
 
-local _default_adapter = 'gemma'
+local _default_adapter = 'ollama'
 local adapters = {
 	-- Посмотреть реализацию для ollama
 	-- https://github.com/nhac43/dotfiles/blob/b3cce533551ea63d2d732ec38412dbee38d615ac/nvim/lua/codecompanion_config.lua#L4
-	gemma = function()
+	ollama = function()
+		local openai = require("codecompanion.adapters.openai")
 		return require("codecompanion.adapters").extend("openai_compatible", {
-			name = "gemma",
-			formatted_name = "Ollama",
-			roles = {
-				llm = "assistant",
-				user = "user",
-				tool = "tool",
-			},
-			opts = {
-				stream = false,
-				tools = true,
-				vision = false,
-			},
 			schema = {
 				model = {
 					-- WIP
-					default = "qwen2.5:14b",
-					-- default = "llama3.1:8b",
+					-- default = "qwen2.5-coder:14b",
+					default = "mistral:latest",
 					-- default = "gemma3:12b",
 				},
+			},
+			env = {
+				chat_url = "/v1/chat/completions", -- optional: default value, override if different
+			},
+			-- https://github.com/olimorris/codecompanion.nvim/discussions/691
+			handlers = {
+				chat_output = function(self, data)
+					local result = openai.handlers.chat_output(self, data)
+					if result and result.output then
+						result.output.role = "assistant"
+					end
+					return result
+				end,
 			},
 		})
 	end,
@@ -59,7 +61,6 @@ local adapters = {
 		})
 	end or nil
 }
-
 local default_adapter
 if vim.env._LLM_DEFAULT_STRATEGY then
 	default_adapter = vim.env._LLM_DEFAULT_STRATEGY
@@ -70,7 +71,6 @@ elseif adapters and adapters.deepseek and vim.env.DEEPSEEK_API_KEY then
 else
 	default_adapter = _default_adapter
 end
-
 
 return {
 	'olimorris/codecompanion.nvim',
