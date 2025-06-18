@@ -38,6 +38,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 function check_is_non_writable()
 	local non_writable_buffers = {
+		[''] = true, -- empty buffer
 		['neo-tree'] = true,
 		['codecompanion'] = true,
 	}
