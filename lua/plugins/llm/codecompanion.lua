@@ -74,24 +74,58 @@ end
 
 return {
 	'olimorris/codecompanion.nvim',
+	extensions = {
+		extensions = {
+			mcphub = {
+				callback = "mcphub.extensions.codecompanion",
+				opts = {
+					show_result_in_chat = true, -- Show mcp tool results in chat
+					make_vars = true, -- Convert resources to #variables
+					make_slash_commands = true, -- Add prompts as /slash commands
+				}
+			}
+		}
+	},
 	dependencies = {
-		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+		{
+			"nvim-treesitter/nvim-treesitter",
+			build = ":TSUpdate",
+			config = function()
+				require('nvim-treesitter.configs').setup({
+					ensure_installed = { 'yaml' },
+					highlight = { enable = true },
+				})
+			end,
+		},
 		{ "nvim-lua/plenary.nvim" },
 		{ "hrsh7th/nvim-cmp" },
 		{
 			'MeanderingProgrammer/render-markdown.nvim',
 			ft = { 'codecompanion' },
-			opts = { file_types = { 'codecompanion' } },
+			opts = { file_types = { 'codecompanion' }, latex = { enabled = false } },
 		},
 	},
 	config = function()
+		vim.keymap.set('n', '<leader>aac', ':CodeCompanionActions<CR>', { desc = '[AiAC]tions pallete' })
 		vim.keymap.set('n', '<leader>ai', ':CodeCompanionChat<CR>', { desc = 'Open chat wiht [AI]' })
 		vim.keymap.set('n', '<leader>in', ':CodeCompanionChat<CR>', { desc = 'Open ai in [in]line mode' })
 
 		require("codecompanion").setup({
+			extensions = {
+				mcphub = {
+					callback = "mcphub.extensions.codecompanion",
+					opts = {
+						show_result_in_chat = true, -- Show mcp tool results in chat
+						make_vars = true, -- Convert resources to #variables
+						make_slash_commands = true, -- Add prompts as /slash commands
+					}
+				}
+			},
 			strategies = {
 				cmd = { adapter = default_adapter },
-				chat = { adapter = default_adapter },
+				chat = {
+					adapter = default_adapter,
+				},
 				inline = { adapter = default_adapter },
 			},
 			adapters = adapters,

@@ -7,4 +7,4 @@
 4. Install lsp servers `cat ./install.sh | sh` (or just remove unused lsp from lsp folder):
     - npm i -g typescript-language-server typescript
     - brew install lua-language-server (or download binary from [here](https://github.com/LuaLS/lua-language-server/releases))
-> All lsp servers located [here](https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md)
+> All lsp servers are listed [here](https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md)

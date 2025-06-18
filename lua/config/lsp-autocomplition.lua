@@ -40,7 +40,6 @@ end
 
 vim.diagnostic.config({
 	-- virtual_text = { current_line = true }
-	-- virtual_text = { current_line = false }
 	virtual_lines = {}
 });
 
@@ -128,12 +127,10 @@ end
 vim.api.nvim_create_autocmd('FileType', {
 	pattern = { 'codecompanion' }, -- File types where you want custom completions
 	callback = function()
-		print "Codecompanion callback fired!"
-		-- -- Enable completion with <C-n>
-		--     vim.opt_local.completeopt:append('menuone')
-		--
-		--     -- Add custom completion items
-		--     vim.api.nvim_buf_set_option(0, 'completefunc', 'v:lua.require"my_completion".completefunc')
+		-- Enable completion with <C-n>
+		vim.opt_local.completeopt:append('menuone')
+		-- Add custom completion items
+		vim.api.nvim_buf_set_option(0, 'completefunc', 'v:lua.require"utils.llm-completion".completefunc')
 	end
 })
 
