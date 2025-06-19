@@ -17,24 +17,29 @@ return {
 		require("neo-tree").setup({
 			popup_border_style = "rounded",
 			enable_git_status = true,
-			enable_diagnostics = true,
-						window = {
+			enable_diagnostics = false,
+			use_libuv_file_watcher = true,
+			filesystem = {
+				follow_current_file = {
+					enabled = true,
+				}
+			},
+			window = {
 				position = 'left',
 				width = 30,
 				mappings = {
 					-- keep / for a regular vim search https://www.reddit.com/r/neovim/comments/181ajkb/mastering_neotree/
 					["/"] = "noop",
-					["#"] = "fuzzy_finder",
 					["l"] = "open",
 					["h"] = "toggle_node",
-	["P"] = {
-        "toggle_preview",
-        config = {
-          use_float = false,
-          use_image_nvim = false,
-          -- title = 'Neo-tree Preview',
-        },
-      },
+					["P"] = {
+						"toggle_preview",
+						config = {
+							use_float = false,
+							use_image_nvim = false,
+							-- title = 'Neo-tree Preview',
+						},
+					},
 				}
 			}
 		})
