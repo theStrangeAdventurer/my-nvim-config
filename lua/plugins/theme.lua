@@ -3,7 +3,12 @@ return {
 	"EdenEast/nightfox.nvim",
 	lazy = false,
 	config = function()
-		vim.cmd("colorscheme nightfox")
+		require("nightfox").setup {
+			options = {
+				transparent = true,
+			}
+		}
+		vim.cmd("colorscheme carbonfox")
 	end
 	-- https://github.com/rebelot/kanagawa.nvim
 	-- "rebelot/kanagawa.nvim",
