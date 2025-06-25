@@ -52,6 +52,21 @@ local adapters = {
 			},
 		})
 	end,
+	custom_deepseek = vim.env.CUSTOM_DEEPSEEK_URL and function()
+		return require("codecompanion.adapters").extend("openai_compatible", {
+			env = {
+				url = vim.env.CUSTOM_DEEPSEEK_URL,
+				api_key = vim.env.CUSTOM_DEEPSEEK_TOKEN,
+				chat_url = "/v1/chat/completions",
+			},
+			schema = {
+				model = {
+					default = "deepseek-chat",
+					-- default = "deepseek",
+				},
+			},
+		})
+	end or nil,
 	custom_anthropic = vim.env.CUSTOM_ANTHROPIC_URL and function()
 		return require("codecompanion.adapters").extend("anthropic", {
 			url = vim.env.CUSTOM_ANTHROPIC_URL,
