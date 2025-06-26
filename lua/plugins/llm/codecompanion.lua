@@ -61,8 +61,7 @@ local adapters = {
 			},
 			schema = {
 				model = {
-					default = "deepseek-chat",
-					-- default = "deepseek",
+					default = "communal-deepseek-v3-0324-in-yt",
 				},
 			},
 		})
