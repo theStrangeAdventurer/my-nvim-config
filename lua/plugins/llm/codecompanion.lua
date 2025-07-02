@@ -12,7 +12,6 @@ local adapters = {
 		return require("codecompanion.adapters").extend("openai_compatible", {
 			schema = {
 				model = {
-					-- WIP
 					-- default = "qwen2.5-coder:14b",
 					default = "mistral:latest",
 					-- default = "gemma3:12b",
@@ -42,6 +41,9 @@ local adapters = {
 				model = {
 					default = "deepseek-chat",
 				},
+				temperature = {
+					default = 0.0
+				}
 			},
 		})
 	end,
@@ -50,6 +52,11 @@ local adapters = {
 			env = {
 				api_key = vim.env.ANTHROPIC_API_KEY,
 			},
+			schema = {
+				model = {
+					default = "claude-3-7-sonnet-latest"
+				}
+			}
 		})
 	end,
 	custom_deepseek = vim.env.CUSTOM_DEEPSEEK_URL and function()
@@ -88,6 +95,7 @@ end
 
 return {
 	'olimorris/codecompanion.nvim',
+	version = '*',
 	extensions = {
 		extensions = {
 			mcphub = {

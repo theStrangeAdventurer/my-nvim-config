@@ -1,3 +1,5 @@
+# 🚀 Neovim Configuration ⚡
+
 # Prerequisites
 0. Install [nvim](https://github.com/neovim/neovim/blob/master/INSTALL.md) *>= 0.11.x* version
 1. Install [ripgrep](https://www.linode.com/docs/guides/ripgrep-linux-installation/) (for telescope)
