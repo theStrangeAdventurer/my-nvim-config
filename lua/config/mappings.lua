@@ -7,6 +7,10 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Nabigation between opened buffers
+vim.keymap.set('n', '<Leader>n', ':bnext<CR>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<Leader>p', ':bprev<CR>', { desc = 'Previous buffer' })
+
 -- Copy Current buffer path
 vim.keymap.set('n', '<leader>fc', function()
 	local path = vim.fn.fnamemodify(vim.fn.expand('%'), ':p:.')
