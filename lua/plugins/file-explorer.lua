@@ -1,6 +1,7 @@
 -- https://github.com/nvim-neo-tree/neo-tree.nvim
 return {
 	"nvim-neo-tree/neo-tree.nvim",
+	lazy = false,
 	branch = "v3.x",
 	config = function()
 		vim.keymap.set('n', '<leader>b', '<cmd>Neotree float buffers<CR>')
@@ -13,13 +14,22 @@ return {
 			{ text = " ", texthl = "DiagnosticSignInfo" })
 		vim.fn.sign_define("DiagnosticSignHint",
 			{ text = "󰌵", texthl = "DiagnosticSignHint" })
+		vim.api.nvim_create_autocmd("BufEnter", {
+			pattern = "",
+			callback = function()
+				if vim.bo.buftype == "" and vim.fn.expand("%") == "" and vim.fn.bufname() == "" then
+					vim.cmd("bd")
+				end
+			end,
+		})
 
 		require("neo-tree").setup({
-			popup_border_style = "rounded",
+			popup_border_style = "",
 			enable_git_status = true,
 			enable_diagnostics = false,
-			use_libuv_file_watcher = true,
 			filesystem = {
+				hijack_netrw_behavior = "open_default", -- or "open_current"
+				use_libuv_file_watcher = true,
 				follow_current_file = {
 					enabled = true,
 				}
@@ -29,6 +39,7 @@ return {
 				width = 30,
 				mappings = {
 					-- keep / for a regular vim search https://www.reddit.com/r/neovim/comments/181ajkb/mastering_neotree/
+					["<cr>"] = "open_with_window_picker",
 					["/"] = "noop",
 					["l"] = "open",
 					["h"] = "toggle_node",
