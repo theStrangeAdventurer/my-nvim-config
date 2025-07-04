@@ -14,14 +14,6 @@ return {
 			{ text = " ", texthl = "DiagnosticSignInfo" })
 		vim.fn.sign_define("DiagnosticSignHint",
 			{ text = "󰌵", texthl = "DiagnosticSignHint" })
-		vim.api.nvim_create_autocmd("BufEnter", {
-			pattern = "",
-			callback = function()
-				if vim.bo.buftype == "" and vim.fn.expand("%") == "" and vim.fn.bufname() == "" then
-					vim.cmd("bd")
-				end
-			end,
-		})
 
 		require("neo-tree").setup({
 			popup_border_style = "",
@@ -35,8 +27,14 @@ return {
 				}
 			},
 			window = {
-				position = 'left',
-				width = 30,
+				width = 20,
+				auto_resize = false,
+				-- position = 'left',
+				position = 'float',
+				float = {
+					border = "rounded", -- This sets rounded corners
+					-- Other float window options...
+				},
 				mappings = {
 					-- keep / for a regular vim search https://www.reddit.com/r/neovim/comments/181ajkb/mastering_neotree/
 					["<cr>"] = "open_with_window_picker",
