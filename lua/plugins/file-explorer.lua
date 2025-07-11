@@ -29,12 +29,7 @@ return {
 			window = {
 				width = 20,
 				auto_resize = false,
-				-- position = 'left',
-				position = 'float',
-				float = {
-					border = "rounded", -- This sets rounded corners
-					-- Other float window options...
-				},
+				position = 'left',
 				mappings = {
 					-- keep / for a regular vim search https://www.reddit.com/r/neovim/comments/181ajkb/mastering_neotree/
 					["<cr>"] = "open_with_window_picker",

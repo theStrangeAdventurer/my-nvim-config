@@ -47,6 +47,10 @@ vim.diagnostic.config({
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*.json",
 	callback = function()
+		if vim.bo.filetype == "jsonc" then
+			return
+		end
+
 		-- Save current cursor position
 		local cursor_pos = vim.fn.getpos('.')
 
