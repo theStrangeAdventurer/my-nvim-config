@@ -18,7 +18,7 @@ return {
 		require("neo-tree").setup({
 			popup_border_style = "",
 			enable_git_status = true,
-			enable_diagnostics = false,
+			enable_diagnostics = true,
 			filesystem = {
 				hijack_netrw_behavior = "open_default", -- or "open_current"
 				use_libuv_file_watcher = true,
@@ -30,6 +30,7 @@ return {
 				width = 20,
 				auto_resize = false,
 				position = 'left',
+				auto_expand_width = true,
 				mappings = {
 					-- keep / for a regular vim search https://www.reddit.com/r/neovim/comments/181ajkb/mastering_neotree/
 					["<cr>"] = "open_with_window_picker",

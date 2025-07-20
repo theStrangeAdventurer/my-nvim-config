@@ -56,6 +56,9 @@ local adapters = {
 				model = {
 					default = "claude-3-7-sonnet-20250219",
 					-- default = "claude-3-7-sonnet-latest"
+				},
+				temperature = {
+					default = 0.0
 				}
 			}
 		})
