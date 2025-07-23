@@ -54,13 +54,15 @@ local adapters = {
 			},
 			schema = {
 				model = {
-					default = "claude-3-7-sonnet-latest"
+					default = "claude-3-7-sonnet-20250219",
+					-- default = "claude-3-7-sonnet-latest"
 				}
 			}
 		})
 	end,
 	custom_deepseek = vim.env.CUSTOM_DEEPSEEK_URL and function()
 		return require("codecompanion.adapters").extend("openai_compatible", {
+			formatted_name = "Custom Deepseek",
 			env = {
 				url = vim.env.CUSTOM_DEEPSEEK_URL,
 				api_key = vim.env.CUSTOM_DEEPSEEK_TOKEN,
@@ -68,13 +70,14 @@ local adapters = {
 			},
 			schema = {
 				model = {
-					default = "communal-deepseek-v3-0324-in-yt",
+					-- default = "communal-deepseek-v3-0324-in-yt",
 				},
 			},
 		})
 	end or nil,
 	custom_anthropic = vim.env.CUSTOM_ANTHROPIC_URL and function()
 		return require("codecompanion.adapters").extend("anthropic", {
+			formatted_name = "Custom Anthropic",
 			url = vim.env.CUSTOM_ANTHROPIC_URL,
 			env = {
 				api_key = vim.env.CUSTOM_ANTHROPIC_TOKEN,
@@ -95,7 +98,6 @@ end
 
 return {
 	'olimorris/codecompanion.nvim',
-	version = '*',
 	extensions = {
 		extensions = {
 			mcphub = {
