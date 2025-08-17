@@ -4,11 +4,11 @@ return {
 	dependencies = {
 		'nvim-lua/plenary.nvim', -- Required for Job and HTTP requests
 	},
-	-- build = 'npm install -g mcp-hub@latest',
-	build = "bundled_build.lua",
+	build = 'npm install -g mcp-hub@latest',
+	-- build = "bundled_build.lua",
 	config = function()
 		require('mcphub').setup {
-			use_bundled_binary = true,
+			-- use_bundled_binary = true,
 			config = vim.fn.expand("~/.config/mcphub/servers.json"), -- Absolute path required
 			-- Optional customization
 			log = {

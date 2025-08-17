@@ -5,8 +5,6 @@ print "codecompanion was loaded..."
 
 local _default_adapter = 'ollama'
 local adapters = {
-	-- Посмотреть реализацию для ollama
-	-- https://github.com/nhac43/dotfiles/blob/b3cce533551ea63d2d732ec38412dbee38d615ac/nvim/lua/codecompanion_config.lua#L4
 	ollama = function()
 		local openai = require("codecompanion.adapters.openai")
 		return require("codecompanion.adapters").extend("openai_compatible", {
@@ -42,7 +40,7 @@ local adapters = {
 					default = "deepseek-chat",
 				},
 				temperature = {
-					default = 0.0
+					default = 0.2
 				}
 			},
 		})
@@ -58,7 +56,7 @@ local adapters = {
 					-- default = "claude-3-7-sonnet-latest"
 				},
 				temperature = {
-					default = 0.0
+					default = 0.2
 				}
 			}
 		})
@@ -75,6 +73,9 @@ local adapters = {
 				model = {
 					-- default = "communal-deepseek-v3-0324-in-yt",
 				},
+				temperature = {
+					default = 0.0
+				}
 			},
 		})
 	end or nil,
@@ -135,9 +136,65 @@ return {
 	config = function()
 		vim.keymap.set('n', '<leader>aac', ':CodeCompanionActions<CR>', { desc = '[AiAC]tions pallete' })
 		vim.keymap.set('n', '<leader>ai', ':CodeCompanionChat<CR>', { desc = 'Open chat wiht [AI]' })
-		vim.keymap.set('n', '<leader>in', ':CodeCompanionChat<CR>', { desc = 'Open ai in [in]line mode' })
 
+		local config = require("codecompanion.config")
 		require("codecompanion").setup({
+			--- @class PromptContext
+			--- @field bufnr number
+			--- @field buftype string
+			--- @field cursor_pos number[]
+			--- @field end_col number
+			--- @field end_line number
+			--- @field filetype string
+			--- @field is_normal boolean
+			--- @field is_visual boolean
+			--- @field lines string[]
+			--- @field mode string
+			--- @field start_col number
+			--- @field start_line number
+			--- @field winnr number
+			--- @example "https://github.com/olimorris/codecompanion.nvim/blob/main/lua/codecompanion/config.lua"
+			prompt_library = {
+				["Project Expert"] = {
+					strategy = "chat",
+					description = "Expert experienced at your project",
+					opts = {
+						-- modes = { "v", "i" },
+						short_name = "pe",
+						-- auto_submit =  true,
+						-- stop_context_insertion = true,
+						-- user_prompt = true,
+					},
+					prompts = {
+						{
+							role = config.constants.SYSTEM_ROLE,
+							--- @param context PromptContext
+							content = function(context)
+								local content =
+								"You are a code expert and you can resolve any complex task in any programming language. You should always respond in the user's question language"
+								local readme = require("utils.project").getCwdReadme()
+
+								if readme then
+									content = content .. "\n\n Project README file content: \n" .. readme
+								end
+
+								local memoryBankContent = require("utils.project").getCwdMemoryBankContent()
+								if memoryBankContent then
+									content = content .. "\n\n Project context: \n" .. memoryBankContent
+								end
+
+								return content
+							end
+						},
+
+						{
+							role = config.constants.USER_ROLE,
+							content = [[#{buffer} #{lsp}
+Could you please ...]]
+						},
+					},
+				}
+			},
 			extensions = {
 				mcphub = {
 					callback = "mcphub.extensions.codecompanion",
